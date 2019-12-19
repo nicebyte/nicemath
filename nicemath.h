@@ -331,7 +331,7 @@ inline constexpr V normalize(const V &v) { return v / length(v); }
 template <class S, unsigned N>
 inline constexpr vec<S, N> operator+(const vec<S, N> &lhs,
                                      const vec<S, N> &rhs) {
-  vec<S, N> result;
+  vec<S, N> result {};
   for (int i = 0; i < N; ++i)
     result.data[i] = lhs.data[i] + rhs.data[i];
   return result;
@@ -343,7 +343,7 @@ inline constexpr vec<S, N> operator+(const vec<S, N> &lhs,
 template <class S, unsigned N>
 inline constexpr vec<S, N> operator-(const vec<S, N> &lhs,
                                      const vec<S, N> &rhs) {
-  vec<S, N> result;
+  vec<S, N> result {};
   for (int i = 0; i < N; ++i)
     result.data[i] = lhs.data[i] - rhs.data[i];
   return result;
@@ -355,7 +355,7 @@ inline constexpr vec<S, N> operator-(const vec<S, N> &lhs,
  */
 template <class S, unsigned N>
 inline constexpr vec<S, N> operator*(const vec<S, N> &lhs, const vec<S, N> &rhs) {
-  vec<S, N> result;
+  vec<S, N> result {};
   for (int i = 0; i < N; ++i)
     result.data[i] = lhs.data[i] * rhs.data[i];
   return result;
@@ -367,7 +367,7 @@ inline constexpr vec<S, N> operator*(const vec<S, N> &lhs, const vec<S, N> &rhs)
  */
 template <class S, unsigned N>
 inline constexpr vec<S, N> operator/(const vec<S, N> &lhs, const vec<S, N> &rhs) {
-  vec<S, N> result;
+  vec<S, N> result {};
   for (int i = 0; i < N; ++i)
     result.data[i] = lhs.data[i] / rhs.data[i];
   return result;
