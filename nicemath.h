@@ -398,7 +398,7 @@ inline constexpr vec<S, N> operator/(const vec<S, N> &lhs, const S rhs) {
 }
 
 /**
- * Multiply the givven vector by the given scalar.
+ * Multiply the given vector by the given scalar.
  */
 template <class S, unsigned N>
 inline vec<S, N>& operator*=(vec<S, N> &v, const S s) {
