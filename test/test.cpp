@@ -145,9 +145,13 @@ NTTEST(matrix_ctors_and_accessors, global) {
 }
 
 // god forgive me for this
-template <class F, class... T>
-void for_args(const F &fn, T&&... args) {
-  auto t = std::make_tuple((fn(std::forward<T>(args)),0)...);
+template <class F>
+void for_args(const F &fn) {}
+
+template <class F, class T, class... Q>
+void for_args(const F &fn, T&& arg, Q&&... args) {
+  fn(std::forward<T>(arg));
+  for_args(fn, std::forward<Q>(args)...);
 }
 
 template <class... T>
