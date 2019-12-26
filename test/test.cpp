@@ -294,7 +294,6 @@ NTTEST(vector_scale, global) {
 template <unsigned N>
 void test_mat_mul_mat() {
   const std::string Nstr = std::to_string(N);
-  using vtype = vec<float, N>;
   using mtype = mat<float, N>;
   std::vector<mtype> as;
   std::vector<mtype> bs;
@@ -317,7 +316,6 @@ NTTEST(matrix_matrix_multiplication, global) {
 template <unsigned N>
 void test_mat_inv() {
   const std::string Nstr = std::to_string(N);
-  using vtype = vec<float, N>;
   using mtype = mat<float, N>;
   std::vector<mtype> ms;
   std::vector<mtype> is;
