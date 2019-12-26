@@ -465,5 +465,5 @@ NTTEST(matrix_transpose, global) {
 }
 
 int main() {
-  return nt_run_tests(global) ? 1 : 0;
+  return nt_run_tests(global) ? 0 : 1;
 }
