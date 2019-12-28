@@ -20,27 +20,36 @@ void vec_demo(const nm::float4 &a, const nm::float4 &b) {
                    dif = a - b,
                    prd = a * b, // elementwise product
                    div = a / b; // elementwise division
+                   
   // dot product
   const float dot = nm::dot(a, b);
+  
   // cross product
   const nm::float3 cross = nm::cross(a.xyz(), b.xyz());
+  
   // arbitrary vector swizzles are supported
   const nm::float3 a_wyx = a.wyx(),
                    b_zyy = b.zyy();
+                   
   // vector expressions may be used in c++ constexprs.
   constexpr float scale = 2.0f;
   constexpr nm::float4 scaled_vector =
       scale * nm::float4 { 1.0f, .0f, .0f, .0f};
 }
+
 void mat_demo(nm::float4x4 a, nm::float4x4 b) {
   // basic operations
   const nm::float4x4 prd = a * b;
+
   // matrix-vector mul
   const nm::float4 v = a * nm::float4 { 1.f, .0f, .0f, .0f };
+  
   // inverse
   const nm::float4x4 inv = nm::inverse(a);
+  
   // determinant
   const float det = nm::det(a);
+  
   // matrix expressions can be used in c++ contstexprs as well
   constexpr nm::float4x4 id = nm::float4x4::identity();
   constexpr nm::float4x4 scaled5x = 5.f * id;
