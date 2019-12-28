@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2019 nicemath contributors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy 
@@ -24,9 +24,31 @@
 #include <cmath>
 
 /**
+ * \mainpage Reference Manual
+ * 
+ * \section Introduction
+ *
  * nicemath is a compact single-header C++ library that provides data types and
  * routines for basic linear algebra operations often encountered in computer
  * graphics and game development.
+ *
+ * To use the library, simply place
+ * <a href = "https://github.com/nicebyte/nicemath/blob/master/nicemath.h">nicemath.h</a> 
+ * anywhere within your C++ project's include path. 
+ *
+ * Please see the <a href="namespacenm.html">list of `nm` namespace members</a> 
+ * for detailed documentation.
+ * \section Intended Usage
+ *
+ * This is not a generic linear algebra library. It is mostly intended to
+ * help users deal with 3D and 2D affine transforms, quaternions and basic
+ * vector operations. 
+ * If you require e.g. support for arbitrarily large, sparse matrices,
+ * you should look elsewhere.
+ */
+
+/**
+ * Namespace for all nicemath types and routines.
  */
 namespace nm {
 
@@ -34,9 +56,13 @@ constexpr float PI = 3.1415926f;
 
 namespace detail {
 
+/**
+ * The base class for all vector types.
+ * Do not use this class directly.
+ */
 template <unsigned N, class S>
 struct vbase {
-  static constexpr unsigned Dimensions = N;
+  static constexpr unsigned Dimensionality = N;
   using Scalar = S;
 
   S data[N];
@@ -48,15 +74,28 @@ struct vbase {
     static_assert(sizeof...(args) == N, "Wrong number of initializers.");
   }
 
+  /**
+   * Access the i-th scalar value in the vector.
+   */
   S& operator[](const int i) { return data[i]; }
+
+  /**
+   * Access the i-th scalar value in the vector as a constant expression.
+   */
   constexpr const S& operator[](const int i) const { return data[i]; }
 };
 
 }
 
+/**
+ * Generic N-dimensional vector. Do not use this class directly.
+ */
 template <class S, unsigned N>
 struct vec;
 
+/**
+ * Specialization of \ref vec for two-dimensional vectors.
+ */
 template <class S>
 struct vec<S, 2> : public detail::vbase<2, S> {
   using BaseT = detail::vbase<2, S>;
@@ -68,8 +107,15 @@ struct vec<S, 2> : public detail::vbase<2, S> {
   constexpr S x() const { return this->data[0]; }
   constexpr S y() const { return this->data[1]; }
 };
+
+/**
+ * A two-dimensional vector of 32-bit floating point values.
+ */
 using float2 = vec<float, 2>;
 
+/**
+ * Specialization of \ref vec for two-dimensional vectors.
+ */
 template <class S>
 struct vec<S, 3> : public detail::vbase<3, S> {
   using BaseT = detail::vbase<3, S>;
@@ -84,8 +130,15 @@ struct vec<S, 3> : public detail::vbase<3, S> {
   constexpr S y() const { return this->data[1]; }
   constexpr S z() const { return this->data[2]; }
 };
+
+/**
+ * A three-dimensional vector of 32-bit floating point values.
+ */
 using float3 = vec<float, 3>;
 
+/**
+ * Specialization of \ref vec for four-dimensional vectors.
+ */
 template <class S>
 struct vec<S, 4> : public detail::vbase<4, S> {
   using BaseT = detail::vbase<4, S>;
@@ -106,6 +159,10 @@ struct vec<S, 4> : public detail::vbase<4, S> {
   constexpr S z() const { return this->data[2]; }
   constexpr S w() const { return this->data[3]; }
 };
+
+/**
+ * A four-dimensional vector of 32-bit floating point values.
+ */
 using float4 = vec<float, 4>;
 
 /**
@@ -116,7 +173,10 @@ using float4 = vec<float, 4>;
  */
 template <class S, unsigned N>
 struct mat {
+  /** Underlying column type. */
   using ColumnT = vec<S, N>;
+
+  /** Number of rows/columns. */
   static constexpr int Size = N;
 
   ColumnT column[Size];
@@ -124,7 +184,10 @@ struct mat {
   constexpr mat(){};
 
   /**
-   * Create a new matrix from given column vectors.
+   * Create a new matrix from the given column vectors.
+   *
+   * Example usage:
+   * `float2x2::from_columns(float2 {.0f, .0f}, float2 {.1f, 1.f})`
    */
   template<class... Args>
   static constexpr auto from_columns(const Args&... cols) {
@@ -133,7 +196,10 @@ struct mat {
   }
 
   /**
-   * Create a new matrix from given row vectors.
+   * Create a new matrix from the given row vectors.
+   *
+   * Example usage:
+   * `float2x2::from_rows(float2 {.0f, .0f}, float2 {.1f, 1.f})`
    */
   template<class... Args>
   static constexpr mat from_rows(const Args&... rows) {
@@ -146,8 +212,8 @@ struct mat {
   }
 
   /**
-   * Create a new identity matrix (i.e. with all elements set to 0, except the
-   * main diagonal elements, which are set to 1).
+   * Create a new identity matrix (i.e. with all coefficients set to 0, except
+   * the main diagonal coefficients, which are set to 1).
    */
   static constexpr mat identity() {
     mat result;
@@ -160,7 +226,7 @@ struct mat {
   /**
    * Access the i-th column of the matrix.
    */
-  ColumnT& operator[](const unsigned i) { return column[i]; }
+  constexpr ColumnT& operator[](const unsigned i) { return column[i]; }
 
   /**
    * Access the i-th column of the matrix (read-only).
@@ -180,6 +246,10 @@ private:
  */
 template <class S>
 using mat2x2 = mat<S, 2>;
+
+/**
+ * A 2x2 matrix of 32-bit floating point coefficients.
+ */
 using float2x2 = mat2x2<float>;
 
 /**
@@ -187,6 +257,10 @@ using float2x2 = mat2x2<float>;
  */
 template <class S>
 using mat3x3 = mat<S, 3>;
+
+/**
+ * A 3x3 matrix of 32-bit floating point coefficients.
+ */
 using float3x3 = mat3x3<float>;
 
 /**
@@ -194,6 +268,10 @@ using float3x3 = mat3x3<float>;
  */
 template <class S>
 using mat4x4 = mat<S, 4>;
+
+/**
+ * A 4x4 matrix of 32-bit floating point coefficients.
+ */
 using float4x4 = mat4x4<float>;
 
 /**
@@ -217,6 +295,10 @@ struct quat : public vec<S, 4> {
    constexpr quat(const S x, const S y, const S z, const S w) :
       vec<S, 4>(x, y, z, w) {}
 };
+
+/**
+ * A quaternion with 32-bit floating point coefficients.
+ */
 using quatf = quat<float>;
 
 /**
@@ -250,6 +332,9 @@ inline constexpr quat<S> operator*(const quat<S> &lhs, const quat<S> &rhs) {
 
 /**
  * Rotates the given vector using the given unit quaternion.
+ * @param vv the vector to rotate
+ * @param q  the quaternion representing the rotation.
+ * @return rotated vv
  */
 template <class S>
 inline constexpr vec<S, 3> rotate(const vec<S, 3> &vv, const quat<S> &q) {
@@ -294,7 +379,7 @@ inline constexpr S length(const vec<S, N> &v) {
 }
 
 /**
- * @return Projection of `a` onto `b`.
+ * @return The projection of vector `a` onto `b`.
  */
 template <class V>
 inline constexpr V project(const V &a, const  V &b) {
@@ -309,6 +394,8 @@ template <class V>
 inline constexpr V reject(const V &a, const  V &b) { return a - project(a, b); }
 
 /**
+ * Reflect a vector against a plane.
+ *
  * @param d The vector being reflected.
  * @param n The normal of the reflection plane. This is expected to be of
  *          magnitude 1.
@@ -320,7 +407,9 @@ inline constexpr V reflect(const V &d, const V &n) {
 }
 
 /**
- * @return Vector with the same direction as v and a magnitude of 1.
+ * Vector normalization.
+ * @param v the vector to normalize.
+ * @return Vector with the same direction as `v` and a magnitude of 1.
  */
 template <class V>
 inline constexpr V normalize(const V &v) { return v / length(v); }
@@ -415,6 +504,12 @@ inline vec<S, N>& operator/=(vec<S, N> &v, const S s) {
   return v;
 }
 
+/**
+ * Vector negation.
+ * @param v vector to negate
+ * @return a vector pointing in the direction opposite of `v`, with the same 
+ *         magnitude as `v`.
+ */
 template<class S, unsigned N>
 inline vec<S, N> operator-(const vec<S, N> &v) {
   vec<S, N> result;
@@ -439,7 +534,7 @@ inline constexpr bool operator!=(const vec<S, N> &lhs, const vec<S, N> &rhs) {
 }
 
 /**
- * @return transpose of `m`.
+ * @return transpose of `src`.
  */
 template <class S, unsigned N>
 inline constexpr mat<S, N> transpose(const mat<S, N> &src) {
@@ -543,7 +638,7 @@ constexpr mat<S, 3> inverse(const mat<S, 3> &m) {
 }
 
 /**
- * @return Inverse for agiven 4x4 matrix.
+ * @return Inverse for a given 4x4 matrix.
  */
 template <class S>
 inline constexpr mat<S, 4> inverse(const mat<S, 4> &m) {
@@ -671,6 +766,11 @@ inline constexpr auto rotation(const S theta, const vec<S, 4> &axis) {
     vec<S, 4> { _0, _0, _0, _1 });
 }
 
+/**
+ * @param theta Angle of rotation, in radians.
+ * @return A 4x4 matrix representing a three-dimensional rotation by a given
+ *         angle around the X axis.
+ */
 template <class S>
 inline constexpr auto rotation_x(const S theta) {
   const S s = std::sin(theta),
@@ -684,6 +784,11 @@ inline constexpr auto rotation_x(const S theta) {
     vec<S, 4> { _0, _0, _0, _1 });
 }
 
+/**
+ * @param theta Angle of rotation, in radians.
+ * @return A 4x4 matrix representing a three-dimensional rotation by a given
+ *         angle around the Y axis.
+ */
 template <class S>
 inline constexpr auto rotation_y(const S theta) {
   const S s = std::sin(theta),
@@ -697,6 +802,11 @@ inline constexpr auto rotation_y(const S theta) {
     vec<S, 4> { _0, _0, _0, _1 });
 }
 
+/**
+ * @param theta Angle of rotation, in radians.
+ * @return A 4x4 matrix representing a three-dimensional rotation by a given
+ *         angle around the Z axis.
+ */
 template <class S>
 inline constexpr auto rotation_z(const S theta) {
   const S s = std::sin(theta),
@@ -709,6 +819,7 @@ inline constexpr auto rotation_z(const S theta) {
     vec<S, 4> { _0, _0, _1, _0 },
     vec<S, 4> { _0, _0, _0, _1 });
 }
+
 /**
  * @return A 3x3 matrix representing translation in two dimensions.
  */
@@ -777,6 +888,15 @@ inline constexpr auto ortho(const S l, const S r,
     vec<S, 4> { -(r + l) / (r - l), -(t + b) / (t - b), -(n + f) / (f - n), _1 });
 }
 
+/**
+ * @param l Left boundary.
+ * @param r Right boundary.
+ * @param b Bottom boundary.
+ * @param t Top boundary.
+ * @param ndist Near boundary.
+ * @param fdist Far boundary.
+ * @return A perspective projection matrix described by the above parameters.
+ */
 template <class S>
 inline constexpr auto perspective(const S l, const S r,
                                   const S b, const S t,
@@ -789,6 +909,13 @@ inline constexpr auto perspective(const S l, const S r,
     vec<S, 4> { _0, _0, -_2 * ndist * fdist / (fdist - ndist), _0 });
 }
 
+/**
+ * @param fovy Vertical field-of-view angle, in radians.
+ * @param aspect Aspect ratio.
+ * @param ndist Near boundary.
+ * @param fdist Far boundary.
+ * @return A perspective projection matrix described by the above parameters.
+ */ 
 template <class S>
 inline constexpr auto perspective(const S fovy, const S aspect,
                                   const S ndist, const S fdist) {
@@ -848,8 +975,8 @@ constexpr bool operator==(const mat<S, N> &lhs, const mat<S, N> &other) {
  */
 template <class S, unsigned N>
 constexpr mat<S, N> operator*(const mat<S, N> &lhs, const S rhs) {
-  mat<S, N> result = lhs;
-  for (typename mat<S, N>::ColumnT &col : result.column) col *= rhs;
+  mat<S, N> result {};
+  for (int i = 0; i < N; ++i) result[i] = lhs[i] * rhs;
   return result;
 }
 
@@ -871,6 +998,11 @@ constexpr mat<S, N> operator/(const S lhs, const mat<S, N> &rhs) {
   return rhs / lhs;
 }
 
+/**
+ * Degree-to-radian conversion.
+ * @param deg angle in degrees.
+ * @return angle in radians.
+ */
 template <class S>
 inline constexpr S deg2rad(const S deg) { return deg *  ((S)PI/(S)180.0); }
 
