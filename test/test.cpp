@@ -27,7 +27,7 @@ bool flt_eq(float a, float b) {
 
 template <class V>
 bool vec_cmp(const V &a, const V &b) {
-  for (unsigned i = 0; i < V::Dimensions; ++i)
+  for (unsigned i = 0; i < V::Dimensionality; ++i)
     if (!flt_eq(a[i], b[i]))
       return false;
   return true;
