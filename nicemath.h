@@ -976,7 +976,7 @@ constexpr bool operator==(const mat<S, N> &lhs, const mat<S, N> &other) {
 template <class S, unsigned N>
 constexpr mat<S, N> operator*(const mat<S, N> &lhs, const S rhs) {
   mat<S, N> result {};
-  for (int i = 0; i < N; ++i) result[i] = lhs[i] * rhs;
+  for (int i = 0; i < N; ++i) result.column[i] = lhs.column[i] * rhs;
   return result;
 }
 
