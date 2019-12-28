@@ -464,6 +464,23 @@ NTTEST(matrix_transpose, global) {
   test_matrix_transpose<4>();
 }
 
+NTTEST(swizzles, global) {
+  constexpr nm::float2 v2   { 1.0f, 2.0f };
+  constexpr nm::float3 v3   { 1.0f, 2.0f, 3.0f };
+  constexpr nm::float4 v4   { 1.0f, 2.0f, 3.0f, 4.0f },
+                       xxyy { 1.0f, 1.0f, 2.0f, 2.0f },
+                       xzzw { 1.0f, 3.0f, 3.0f, 4.0f },
+                       wzxy { 4.0f, 3.0f, 1.0f, 2.0f };
+  constexpr nm::float3 zyy  { 3.0f, 2.0f, 2.0f };
+  static_assert(v4.xxyy() == xxyy);
+  static_assert(v3.xxyy() == xxyy);
+  static_assert(v2.xxyy() == xxyy);
+  static_assert(v4.xzzw() == xzzw);
+  static_assert(v4.wzxy() == wzxy);
+  static_assert(v4.zyy() == zyy);
+  static_assert(v3.zyy() == zyy);
+}
+
 int main() {
   return nt_run_tests(global) ? 0 : 1;
 }
