@@ -8,7 +8,7 @@ nicemath is a compact single-header C++ library that provides data types and rou
 To use the library, simply place [nicemath.h](https://raw.githubusercontent.com/nicebyte/nicemath/master/nicemath.h) anywhere within your C++ project's include path.
 
 ## Usage
-This is not a generic linear algebra library. It is mostly intended to help users deal with 3D and 2D affine transforms, quaternions and basic vector operations. If you require e.g. support for arbitrarily large, sparse matrices, you should look elsewhere.
+This is not a general-purpose linear algebra library. It is mostly intended to help users deal with 3D and 2D affine transforms, quaternions and basic vector operations. If you require e.g. support for arbitrarily large, sparse matrices, you should look elsewhere.
 
 ## Example
 
