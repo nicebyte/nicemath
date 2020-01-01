@@ -63,9 +63,12 @@
  *   const float dot = nm::dot(a, b);
  *
  *   // cross product
- *   const nm::float3 cross = nm::cross(nm::float3 { a.x(), a.y(), a.z() },
- *                                      nm::float3 { b.x(), b.y(), b.z() });
- *   
+ *   const nm::float3 cross = nm::cross(a.xyz(), b.xyz());
+ *
+ *   // arbitrary vector swizzles are supported
+ *   const nm::float3 a_wyx = a.wyx(),
+ *                    b_zyy = b.zyy();
+ *
  *   // vector expressions may be used in c++ constexprs.
  *   constexpr float scale = 2.0f;
  *   constexpr nm::float4 scaled_vector =
@@ -117,7 +120,7 @@ constexpr int cestrlen(const char *p) {
   return r;
 }
 #define l2i(c) ((c-'w'+3)%4)
-#define l2m(c) (1 << l2i(c))
+#define l2m(c) (uint16_t)(1u << l2i(c))
 constexpr uint16_t swzl_mask(const char *p) {
   uint16_t mask = 0x0;
   for (const char *q = p; *q; q++)
@@ -831,7 +834,7 @@ template <class S, unsigned N>
 inline constexpr vec<S, N> operator+(const vec<S, N> &lhs,
                                      const vec<S, N> &rhs) {
   vec<S, N> result {};
-  for (int i = 0; i < N; ++i)
+  for (unsigned i = 0; i < N; ++i)
     result.data[i] = lhs.data[i] + rhs.data[i];
   return result;
 }
@@ -843,7 +846,7 @@ template <class S, unsigned N>
 inline constexpr vec<S, N> operator-(const vec<S, N> &lhs,
                                      const vec<S, N> &rhs) {
   vec<S, N> result {};
-  for (int i = 0; i < N; ++i)
+  for (unsigned i = 0; i < N; ++i)
     result.data[i] = lhs.data[i] - rhs.data[i];
   return result;
 }
@@ -855,7 +858,7 @@ inline constexpr vec<S, N> operator-(const vec<S, N> &lhs,
 template <class S, unsigned N>
 inline constexpr vec<S, N> operator*(const vec<S, N> &lhs, const vec<S, N> &rhs) {
   vec<S, N> result {};
-  for (int i = 0; i < N; ++i)
+  for (unsigned i = 0; i < N; ++i)
     result.data[i] = lhs.data[i] * rhs.data[i];
   return result;
 }
@@ -867,7 +870,7 @@ inline constexpr vec<S, N> operator*(const vec<S, N> &lhs, const vec<S, N> &rhs)
 template <class S, unsigned N>
 inline constexpr vec<S, N> operator/(const vec<S, N> &lhs, const vec<S, N> &rhs) {
   vec<S, N> result {};
-  for (int i = 0; i < N; ++i)
+  for (unsigned i = 0; i < N; ++i)
     result.data[i] = lhs.data[i] / rhs.data[i];
   return result;
 }
@@ -878,7 +881,7 @@ inline constexpr vec<S, N> operator/(const vec<S, N> &lhs, const vec<S, N> &rhs)
 template <class S, unsigned N>
 inline constexpr vec<S, N> operator*(const vec<S, N> &lhs, const S rhs) {
   vec<S, N> result = lhs;
-  for (int i = 0; i < N; ++i) result.data[i] *= rhs;
+  for (unsigned i = 0; i < N; ++i) result.data[i] *= rhs;
   return result;
 }
 
@@ -932,7 +935,7 @@ inline vec<S, N> operator-(const vec<S, N> &v) {
  */
 template <class S, unsigned N>
 inline constexpr bool operator==(const vec<S, N> &lhs, const vec<S, N> &rhs)  {
-  for (int i = 0; i < N; ++i)
+  for (unsigned i = 0; i < N; ++i)
     if(lhs.data[i] != rhs.data[i])
       return false;
   return true;
@@ -1357,10 +1360,10 @@ constexpr vec<S, N> operator*(const mat<S, N> &lhs, const vec<S, N> &rhs) {
 template<class S, unsigned N>
 constexpr mat<S, N> operator*(const mat<S, N> &lhs, const mat<S, N> &rhs) {
   mat<S, N> result;
-  for (int c = 0; c < N; ++c) {
-    for (int r = 0; r < N; ++r) {
+  for (unsigned c = 0; c < N; ++c) {
+    for (unsigned r = 0; r < N; ++r) {
       result.column[c].data[r] = 0.0f;
-      for (int i = 0; i < N; ++i) {
+      for (unsigned i = 0; i < N; ++i) {
         result.column[c].data[r] +=
           (lhs.column[i].data[r]) * (rhs.column[c].data[i]);
       }
@@ -1386,7 +1389,7 @@ constexpr bool operator==(const mat<S, N> &lhs, const mat<S, N> &other) {
 template <class S, unsigned N>
 constexpr mat<S, N> operator*(const mat<S, N> &lhs, const S rhs) {
   mat<S, N> result {};
-  for (int i = 0; i < N; ++i) result.column[i] = lhs.column[i] * rhs;
+  for (unsigned i = 0; i < N; ++i) result.column[i] = lhs.column[i] * rhs;
   return result;
 }
 
