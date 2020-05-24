@@ -767,6 +767,15 @@ inline constexpr auto cross(const vec<S, 3> &lhs, const vec<S, 3> &rhs) {
                    lhs.data[0] * rhs.data[1] - lhs.data[1] * rhs.data[0]);
 }
 
+template<>
+inline constexpr auto cross(const vec<float, 3> &lhs, const vec<float, 3> &rhs) {
+	const vec<double, 3> a { (double)lhs.x(), (double)lhs.y(), (double)lhs.z() },
+                       b { (double)rhs.x(), (double)rhs.y(), (double)rhs.z() },
+                       c = cross(a, b);
+    return vec<float, 3> { (float)c.x(), (float)c.y(), (float)c.z() };
+}
+
+
 /**
  * @return The dot product of two vectors.
  */
