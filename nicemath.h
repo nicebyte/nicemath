@@ -755,7 +755,30 @@ inline constexpr vec<S, 3> rotate(const vec<S, 3> &vv, const quat<S> &q) {
   return q * v * q.conjugate();
 }
 
-// TODO: quat to mat
+template<class S>
+auto quat2mat(const quat<S> &q) {
+  return mat4x4<S> {
+    { 
+      1.0 - 2.0 * (q.y() * q.y() + q.z() * q.z()),
+      2.0 *(q.x() * q.y() - q.z() * q.w()),
+      2.0 * (q.x() * q.z() + q.y() * q.w()), 
+      0.0
+    },
+    {
+      2.0 * (q.x() * q.y() + q.z() * q.w()),
+      1.0 - 2.0 * (q.x() * q.x() + q.z() * q.z()),
+      2.0 * (q.y() * q.z() + q.x() * q.w()), 
+      0.0
+    },
+    {
+      2.0 * (q.x() * q.z() + q.y() * q.w()),
+      2.0 * (q.y() * q.z() - q.x() * q.w()),
+      1.0 - 2.0 * (q.x() * q.x() + q.y() * q.y()),
+      0.0
+    },
+    { 0.0, 0.0, 0.0, 1.0 }
+  };
+}
 
 /**
  * @return The cross product of two three-dimensional vectors.
